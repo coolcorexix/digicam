@@ -1,0 +1,211 @@
+:root {
+  --sky-hi: #c9d5de;
+  --sky-lo: #8fa3b3;
+  --ink: #1f2c35;
+  --ink-soft: #3f505c;
+  --alu-hi: #e6e9ec;
+  --alu-lo: #a7aeb5;
+  --bezel: #15191d;
+  --lcd: #0d1820;
+  --osd: #eaf2f6;
+  --signal: #ff8a1f;
+  --led: #74ff98;
+  --focus: #0b63ce;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+  min-height: 100dvh;
+  color: var(--ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.5;
+  /* 2000s product-shot backdrop */
+  background: radial-gradient(120% 90% at 50% 20%, var(--sky-hi), var(--sky-lo));
+  background-attachment: fixed;
+}
+
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 56px 16px 48px;
+}
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* ---------- camera body ---------- */
+
+.camera { position: relative; padding-top: 22px; }
+
+.body {
+  display: grid;
+  grid-template-columns: 1fr 168px;
+  grid-template-areas: "brand brand" "lcd controls";
+  gap: 14px 22px;
+  padding: 18px 22px 24px;
+  border-radius: 30px 30px 36px 36px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 1px, rgba(0,0,0,.035) 1px 3px),
+    linear-gradient(180deg, var(--alu-hi), var(--alu-lo) 92%);
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.85),
+    inset 0 -3px 6px rgba(0,0,0,.18),
+    0 30px 50px -24px rgba(23,38,51,.55),
+    0 4px 10px rgba(23,38,51,.18);
+}
+
+.brand { grid-area: brand; display: flex; align-items: baseline; gap: 10px; }
+
+.brand h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  font-stretch: 125%;
+  font-style: italic;
+  letter-spacing: -0.01em;
+  color: #4a535b;
+  text-shadow: 0 1px 0 rgba(255,255,255,.8);
+}
+
+.model { font-size: 13px; font-weight: 600; font-stretch: 110%; color: #6a737b; }
+
+.led {
+  margin-left: auto;
+  align-self: center;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #3b4a3f;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.5);
+}
+.led.blink { background: var(--led); box-shadow: 0 0 8px var(--led); animation: blink .7s steps(1) infinite; }
+
+/* shutter release on the top edge */
+.shutter {
+  position: absolute;
+  top: 0; right: 40px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 0; border: 0; background: none;
+  font: inherit; font-size: 15px; font-weight: 600; color: var(--ink);
+  cursor: pointer;
+  flex-direction: row-reverse;
+}
+.release {
+  width: 64px; height: 22px;
+  border-radius: 12px 12px 3px 3px;
+  background: linear-gradient(180deg, #fbfcfd, #b9c0c6 70%, #9aa2a9);
+  box-shadow: inset 0 1px 0 #fff, 0 2px 3px rgba(0,0,0,.25);
+  transition: transform .08s;
+}
+.shutter:hover .release { background: linear-gradient(180deg, #fff, #c6ccd1 70%, #a3abb2); }
+.shutter:active .release { transform: translateY(3px); }
+.shutter:disabled { cursor: progress; opacity: .6; }
+.shutter:focus-visible { outline-offset: 6px; border-radius: 6px; }
+
+/* ---------- screen ---------- */
+
+.bezel {
+  grid-area: lcd;
+  padding: 12px;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #2a3036, var(--bezel) 40%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06), 0 1px 0 rgba(255,255,255,.7);
+}
+.bezel.dragging { box-shadow: inset 0 0 0 2px var(--signal), 0 1px 0 rgba(255,255,255,.7); }
+
+.lcd {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 4px;
+  background: radial-gradient(90% 80% at 50% 40%, #16303d, var(--lcd));
+}
+
+.lcd img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.lcd img.dim { opacity: .45; filter: grayscale(.6); }
+
+.osd {
+  position: absolute; inset: 0;
+  font-family: var(--font-osd), monospace;
+  font-size: 15px;
+  color: var(--osd);
+  text-shadow: 0 0 2px rgba(0,0,0,.9), 0 1px 0 rgba(0,0,0,.9);
+  pointer-events: none;
+}
+.osd > span { position: absolute; }
+.tl { top: 8px; left: 12px; }
+.tr { top: 10px; right: 12px; }
+.bl { bottom: 8px; left: 12px; }
+.br { bottom: 8px; right: 12px; }
+
+.battery {
+  display: block; position: relative;
+  width: 24px; height: 12px;
+  border: 2px solid var(--osd); border-radius: 2px;
+  background: linear-gradient(90deg, var(--osd) 0 70%, transparent 70%) content-box;
+  padding: 1px;
+}
+.battery::after {
+  content: ""; position: absolute; right: -5px; top: 2px;
+  width: 3px; height: 4px; background: var(--osd);
+}
+
+.center {
+  position: absolute; inset: 0;
+  display: grid; place-content: center;
+  margin: 0; padding: 0 12%;
+  text-align: center; font-size: 19px; line-height: 1.5;
+}
+.warn { color: var(--signal); }
+.blink { animation: blink 1s steps(1) infinite; }
+
+@keyframes blink { 50% { opacity: .25; } }
+
+/* ---------- buttons ---------- */
+
+.controls { grid-area: controls; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+
+.key {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0; border: 0; background: none;
+  font: inherit; font-size: 15px; font-weight: 500; line-height: 1.25;
+  color: var(--ink); text-align: left; text-decoration: none;
+  cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: none;
+}
+.glyph {
+  flex: none;
+  display: grid; place-items: center;
+  width: 42px; height: 42px; border-radius: 50%;
+  font-size: 15px; color: #39424a;
+  background: radial-gradient(circle at 40% 30%, #fdfdfe, #c3c9cf 70%);
+  box-shadow: inset 0 -2px 3px rgba(0,0,0,.18), 0 2px 3px rgba(0,0,0,.22), 0 0 0 1px rgba(0,0,0,.08);
+}
+.key:active .glyph { box-shadow: inset 0 2px 4px rgba(0,0,0,.3), 0 0 0 1px rgba(0,0,0,.1); }
+.key:disabled, .key[aria-disabled="true"] { opacity: .45; cursor: default; }
+.key:focus-visible { border-radius: 24px; }
+
+/* ---------- copy ---------- */
+
+footer { max-width: 60ch; margin: 36px auto 0; padding: 0 6px; }
+footer p { margin: 0 0 10px; }
+.quiet { color: var(--ink-soft); font-size: 15px; }
+footer a { color: inherit; text-underline-offset: 3px; }
+
+@media (max-width: 620px) {
+  main { padding-top: 44px; }
+  .body {
+    grid-template-columns: 1fr;
+    grid-template-areas: "brand" "lcd" "controls";
+    padding: 16px 14px 20px;
+    border-radius: 24px;
+  }
+  .controls { flex-direction: row; justify-content: space-between; }
+  .shutter { right: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blink, .led.blink { animation: none; }
+  .release { transition: none; }
+}
