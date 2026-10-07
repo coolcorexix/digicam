@@ -4,6 +4,9 @@ Make a video or photo look like it came out of a 2005–2010 digital camera: VGA
 chroma bleed, over-sharpened halos, MJPEG blockiness, lifted blacks with blue shadows, vibrant but
 not harsh colour, warm highlight bloom and sensor grain. One bash script on top of `ffmpeg`.
 
+Just want to try it on a photo? **[digicam-phi.vercel.app](https://digicam-phi.vercel.app)** runs the
+same pipeline in the browser (source in [`web/`](web)).
+
 ## Install
 
 ```sh
